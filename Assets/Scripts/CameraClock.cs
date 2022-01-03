@@ -49,14 +49,14 @@ public class CameraClock : MonoBehaviour {
     }
 
     private void touchInputs() {
-      Vector3 dragStartPos;
-      Vector3 dragCurrentPos;
+      Vector3 dragStartPos = new Vector3(0,0,0);
+      Vector3 dragCurrentPos = new Vector3(0,0,0);
       Touch touch;
       bool DragStart;
       bool Dragging;
       bool DragRelease;
-      // float dX;
-      // float dY;
+      float dX;
+      float dY;
 
       if(Input.touchCount > 0) {
         touch = Input.GetTouch(0);
@@ -75,11 +75,11 @@ public class CameraClock : MonoBehaviour {
           dragStartPos.z = 0f;
           Debug.Log("on");
 
-          // dX = dragCurrentPos.x - dragStartPos.x;
-          // dY = dragCurrentPos.y - dragStartPos.y;
+          dX = dragCurrentPos.x - dragStartPos.x;
+          dY = dragCurrentPos.y - dragStartPos.y;
 
-          // counterX += dX;
-          // counterY += dY;
+          counterX += dX;
+          counterY += dY;
         }
       }
     }

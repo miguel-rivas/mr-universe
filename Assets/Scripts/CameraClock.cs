@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CameraClock : MonoBehaviour {
     public float speed = 1f;
@@ -25,8 +26,14 @@ public class CameraClock : MonoBehaviour {
       bool zoomIn = Input.GetKey(KeyCode.Z);
       bool zoomOut = Input.GetKey(KeyCode.X);
       bool activateAuto = Input.GetKey(KeyCode.C);
+        bool escape = Input.GetKey(KeyCode.Escape);
 
-      if(activateAuto) {
+        if (escape)
+        {
+            SceneManager.LoadScene("Main");
+        }
+
+        if (activateAuto) {
           autoRotation = true;
       }
 
@@ -49,39 +56,37 @@ public class CameraClock : MonoBehaviour {
     }
 
     private void touchInputs() {
-      Vector3 dragStartPos = new Vector3(0,0,0);
-      Vector3 dragCurrentPos = new Vector3(0,0,0);
-      Touch touch;
-      bool DragStart;
-      bool Dragging;
-      bool DragRelease;
-      float dX;
-      float dY;
+      Touch t1, t2;
+      float incX, incY, incZ, prevMagn, currMagn;
+      Vector2 dt1, dt2;
 
-      if(Input.touchCount > 0) {
-        touch = Input.GetTouch(0);
+      if (Input.touchCount > 0) {
+        t1 = Input.GetTouch(0);
 
-        DragStart = touch.phase == TouchPhase.Began;
-        Dragging = touch.phase == TouchPhase.Moved;
-        DragRelease = touch.phase == TouchPhase.Ended;
+            if (Input.touchCount > 1)
+            {
+                t2 = Input.GetTouch(1);
+                dt1 = t1.position - t1.deltaPosition;
+                dt2 = t2.position - t2.deltaPosition;
+                prevMagn = (dt1 - dt2).magnitude;
+                currMagn = (t1.position - t2.position).magnitude;
+                incZ = (currMagn - prevMagn) * -0.1f;
+                counterZ += incZ;
+            }
+            else
+            {
+                incX = ((t1.position.x / Screen.width) - 0.5f);
+                incY = ((t1.position.y / Screen.height) - 0.5f);
 
-        if(DragStart) {
-          dragStartPos = Camera.main.ScreenToWorldPoint(touch.position);
-          dragStartPos.z = 0f;
-          Debug.Log("start");
+                if (incX > 0.45f && incY < -0.4f) {
+                    SceneManager.LoadScene("Main");
+                }
+
+                counterX += incX;
+                counterY += incY;
+            }
+
         }
-        if(Dragging) {
-          dragCurrentPos = Camera.main.ScreenToWorldPoint(touch.position);
-          dragStartPos.z = 0f;
-          Debug.Log("on");
-
-          dX = dragCurrentPos.x - dragStartPos.x;
-          dY = dragCurrentPos.y - dragStartPos.y;
-
-          counterX += dX;
-          counterY += dY;
-        }
-      }
     }
 
     private void rotateObject() {
